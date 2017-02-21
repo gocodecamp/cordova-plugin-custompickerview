@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <plugin xmlns="http://phonegap.com/ns/plugins/1.0"
-    id="com.bjzjns.customPickerView"
+    id="cordova-plugin-customPickerView"
     version="1.0.0">
     <engines>
         <engine name="cordova" version=">=3.3.0" />
