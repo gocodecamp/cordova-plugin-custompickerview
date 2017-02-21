@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<plugin xmlns="http://phonegap.com/ns/plugins/1.0"
+    id="com.bjzjns.customPickerView"
+    version="1.0.0">
+    <engines>
+        <engine name="cordova" version=">=3.3.0" />
+    </engines>
+    
+    <name>customPickerView</name>
+    <description>customPickerView</description>
+    
+    <js-module src="www/customPickerView.js" name="pickerViewModel">
+        <clobbers target="pickerViewModel" />
+    </js-module>
+    
+    <platform name="ios">
+        <source-file src="src/ios/ZJCustomPickerViewPlugin.m" />
+        <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />
+        <framework src="src/ios/CoreActionSheetPicker.framework" custom="true" framework="true"/>
+        <config-file target="config.xml" parent="/widget">
+            
+            <feature name="customPickerView">
+                <param name="ios-package" value="ZJCustomPickerViewPlugin" />
+            </feature>
+        </config-file>
+    </platform>
+</plugin>
