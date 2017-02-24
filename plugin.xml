@@ -24,4 +24,23 @@
             </feature>
         </config-file>
     </platform>
+	<platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="customPickerView">
+                <param name="android-package" value="com.bjzjns.cordovaplugin.customPickerView" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+        <source-file src="src/android/layout_multi_wheel_picker.xml" target-dir="res/layout" />
+        <source-file src="src/android/customPickerView.java"
+            target-dir="src/com/bjzjns/cordovaplugin" />
+        <source-file src="src/android/MultiWheelPickerManager.java"
+            target-dir="src/com/bjzjns/cordovaplugin" />
+        <source-file src="src/android/MultiWheelPickerModel.java"
+            target-dir="src/com/bjzjns/cordovaplugin" />
+        <source-file src="src/android/WheelPickerModel.java"
+            target-dir="src/com/bjzjns/cordovaplugin" />
+        <framework src="cn.aigestudio.wheelpicker:WheelPicker:1.1.2" />
+        <framework src="com.google.code.gson:gson:2.8.0" />
+    </platform>
 </plugin>
