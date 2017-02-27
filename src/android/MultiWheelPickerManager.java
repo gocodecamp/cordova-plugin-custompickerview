@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.aigestudio.wheelpicker.WheelPicker;
-import com.google.gson.Gson;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
@@ -42,9 +41,6 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
     private int mWheelPickerNumber = 0;
     private boolean linkage;
 
-    private MultiWheelPickerModel mMultiWheelPickerModel;
-    private WheelPickerModel mWheelPickerModel;
-
     private int mLeftPostion, mCenterPostion, mRightPostion;
 
     private ArrayList<String> mLeftList = new ArrayList<String>();
@@ -53,6 +49,12 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
 
     private Activity mActivity;
     private String mAPackageName;
+    private JSONArray mJsonArray;
+
+    private String mKeyColumnCount = "columnCount";
+    private String mKeyIsLinkWork = "isLinkWork";
+    private String mKeyDataArray = "dataArray";
+    private String mKeyObjectArray = "objectArray";
 
     public MultiWheelPickerManager(CordovaPlugin cordovaPlugin, CallbackContext callbackContext, JSONArray jsonArray) {
         mCordovaPlugin = cordovaPlugin;
@@ -62,7 +64,6 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
 
         if (jsonArray.length() != 0) {
             initData(jsonArray);
-            initView(mCordovaPlugin);
         } else {
             if (callbackContext != null) {
                 callbackContext.error("请传入约定的数据格式");
@@ -79,40 +80,50 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
 
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(0);
-            mMultiWheelPickerModel = new Gson().fromJson(jsonObject.toString(), MultiWheelPickerModel.class);
-            mWheelPickerNumber = mMultiWheelPickerModel.columnCount;
-            linkage = mMultiWheelPickerModel.isLinkWork;
+            Log.i(TAG, "初始化数据:" + jsonObject.toString());
+            mWheelPickerNumber = jsonObject.getInt(mKeyColumnCount);
+            linkage = jsonObject.getBoolean(mKeyIsLinkWork);
+            mJsonArray = jsonObject.getJSONArray(mKeyDataArray);
 
-            getStringList(mLeftList, mMultiWheelPickerModel.dataArray);
-            getStringList(mCenterList, mMultiWheelPickerModel.dataArray.get(0).objectArray);
-            getStringList(mRightList, mMultiWheelPickerModel.dataArray.get(0).objectArray.get(0).objectArray);
+            switch (mWheelPickerNumber) {
+                case 3:
+                    getNameList(mRightList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray));
+                case 2:
+                    getNameList(mCenterList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray));
+                case 1:
+                    getNameList(mLeftList, mJsonArray);
+                default:
+                    break;
+            }
 
-            Log.i(TAG, mMultiWheelPickerModel.toString());
+            initView();
 
         } catch (JSONException e) {
             e.printStackTrace();
-            mCallbackContext.error("JSONException");
+            mCallbackContext.error("初始化数据解析异常");
         }
-
     }
 
     /**
      * 获取数据的名称显示集合
      *
      * @param arrayList
-     * @param wheelPickerModelArrayList
+     * @param jsonArray
      */
-    private void getStringList(ArrayList<String> arrayList, ArrayList<WheelPickerModel> wheelPickerModelArrayList) {
+    private void getNameList(ArrayList<String> arrayList, JSONArray jsonArray) {
 
-        if (arrayList != null && wheelPickerModelArrayList != null) {
+        if (arrayList != null && jsonArray != null) {
             arrayList.clear();
-            int length = wheelPickerModelArrayList.size();
-            for (int i = 0; i < length; i++) {
-                arrayList.add(wheelPickerModelArrayList.get(i).name);
+            int length = jsonArray.length();
+            try {
+                for (int i = 0; i < length; i++) {
+                    arrayList.add(jsonArray.getJSONObject(i).getString("name"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
-
 
     private int getViewIdentifier(String viewId) {
         return mActivity.getResources().getIdentifier(viewId, "id", mAPackageName);
@@ -124,16 +135,14 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
 
     /**
      * 初始化视图
-     *
-     * @param cordovaPlugin
      */
-    private void initView(final CordovaPlugin cordovaPlugin) {
+    private void initView() {
         //UI 线程显示操作
-        cordovaPlugin.cordova.getActivity().runOnUiThread(new Runnable() {
+        mCordovaPlugin.cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRootView = ((FrameLayout) (((Activity) cordovaPlugin.webView.getContext()).getWindow().getDecorView().findViewById(android.R.id.content)));
-                mMultiWheelPickerView = LayoutInflater.from(cordovaPlugin.webView.getContext()).inflate(getLayoutIdentifier("layout_multi_wheel_picker"), null);
+                mRootView = ((FrameLayout) (((Activity) mCordovaPlugin.webView.getContext()).getWindow().getDecorView().findViewById(android.R.id.content)));
+                mMultiWheelPickerView = LayoutInflater.from(mCordovaPlugin.webView.getContext()).inflate(getLayoutIdentifier("layout_multi_wheel_picker"), null);
 
                 mTouchRl = mMultiWheelPickerView.findViewById(getViewIdentifier("touch_rl"));
                 mCancelTv = mMultiWheelPickerView.findViewById(getViewIdentifier("cancle_tv"));
@@ -220,44 +229,74 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
         }
     }
 
-
     /**
      * 确认后的回调数据设置
      */
     public void confirm() {
         if (mCallbackContext != null) {
             //根据默认或设置的轮子个数获 选中的数据  拼接数据 设置回调函数
-
             dismiss();
-            mCallbackContext.success(mMultiWheelPickerModel.getJosnArry(mLeftPostion, mCenterPostion, mRightPostion));
-            Log.i(TAG, "返回的数据：" + mMultiWheelPickerModel.getJosnArry(mLeftPostion, mCenterPostion, mRightPostion).toString());
+            JSONArray jsonArray = new JSONArray();
+            try {
+                switch (mWheelPickerNumber) {
+                    case 1:
+                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                        break;
+                    case 2:
+                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                        if (!linkage) {
+                            mLeftPostion = 0;
+                        }
+                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
+                        break;
+                    case 3:
+                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                        if (linkage) {
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+                        } else {
+                            jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
+                            jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+                        }
+                        break;
+                }
+                mCallbackContext.success(jsonArray);
+                Log.i(TAG, "返回的数据：" + jsonArray.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                mCallbackContext.error(e.getMessage());
+
+            }
         }
     }
 
     @Override
-
     public void onItemSelected(WheelPicker picker, Object data, int position) {
 
-        if (picker.getId() == getViewIdentifier("wheel_left_wp")) {
-            mLeftPostion = position;
-            //是否联动
-            if (linkage) {
-                getStringList(mCenterList, mMultiWheelPickerModel.dataArray.get(mLeftPostion).objectArray);
-                mWheelCenterWp.setData(mCenterList);
-                mWheelCenterWp.setSelectedItemPosition(0);
-                getStringList(mRightList, mMultiWheelPickerModel.dataArray.get(mLeftPostion).objectArray.get(0).objectArray);
-                mWheelRightWp.setData(mRightList);
-                mWheelRightWp.setSelectedItemPosition(0);
+        try {
+            if (picker.getId() == getViewIdentifier("wheel_left_wp")) {
+                mLeftPostion = position;
+                //是否联动
+                if (linkage) {
+                    getNameList(mCenterList, mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray));
+                    mWheelCenterWp.setData(mCenterList);
+                    mWheelCenterWp.setSelectedItemPosition(0);
+                    getNameList(mRightList, mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray));
+                    mWheelRightWp.setData(mRightList);
+                    mWheelRightWp.setSelectedItemPosition(0);
+                }
+            } else if (picker.getId() == getViewIdentifier("wheel_center_wp")) {
+                mCenterPostion = position;
+                if (linkage) {
+                    getNameList(mRightList, mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray));
+                    mWheelRightWp.setData(mRightList);
+                    mWheelRightWp.setSelectedItemPosition(0);
+                }
+            } else if (picker.getId() == getViewIdentifier("wheel_right_wp")) {
+                mRightPostion = position;
             }
-        } else if (picker.getId() == getViewIdentifier("wheel_center_wp")) {
-            mCenterPostion = position;
-            if (linkage) {
-                getStringList(mRightList, mMultiWheelPickerModel.dataArray.get(mLeftPostion).objectArray.get(mCenterPostion).objectArray);
-                mWheelRightWp.setData(mRightList);
-                mWheelRightWp.setSelectedItemPosition(0);
-            }
-        } else if (picker.getId() == getViewIdentifier("wheel_right_wp")) {
-            mRightPostion = position;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -269,5 +308,4 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
             confirm();
         }
     }
-
 }
