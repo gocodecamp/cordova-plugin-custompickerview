@@ -6,7 +6,7 @@
 //
 
 #import "ZJCustomPickerViewPlugin.h"
-#import <CoreActionSheetPicker/CoreActionSheetPicker.h>
+#import "CoreActionSheetPicker.h"
 
 @interface ZJCustomPickerViewPlugin () <ActionSheetCustomPickerDelegate>
 

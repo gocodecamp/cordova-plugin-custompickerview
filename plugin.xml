@@ -15,8 +15,29 @@
     
     <platform name="ios">
         <source-file src="src/ios/ZJCustomPickerViewPlugin.m" />
-        <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />
-        <framework src="src/ios/CoreActionSheetPicker.framework" custom="true" framework="true"/>
+        <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />        
+        <header-file src="src/ios/AbstractActionSheetPicker.h" />
+        <header-file src="src/ios/ActionSheetCustomPicker.h" />
+        <header-file src="src/ios/ActionSheetCustomPickerDelegate.h" />
+        <header-file src="src/ios/ActionSheetDatePicker.h" />
+        <header-file src="src/ios/ActionSheetDistancePicker.h" />
+        <header-file src="src/ios/ActionSheetLocalePicker.h" />
+        <header-file src="src/ios/ActionSheetMultipleStringPicker.h" />
+        <header-file src="src/ios/ActionSheetPicker.h" />
+        <header-file src="src/ios/ActionSheetStringPicker.h" />
+        <header-file src="src/ios/CoreActionSheetPicker.h" />
+        <header-file src="src/ios/DistancePickerView.h" />
+        <header-file src="src/ios/SWActionSheet.h" />
+        <source-file src="src/ios/AbstractActionSheetPicker.m" />
+        <source-file src="src/ios/ActionSheetCustomPicker.m" />
+        <source-file src="src/ios/ActionSheetDatePicker.m" />
+        <source-file src="src/ios/ActionSheetDistancePicker.m" />
+        <source-file src="src/ios/ActionSheetLocalePicker.m" />
+        <source-file src="src/ios/ActionSheetMultipleStringPicker.m" />
+        <source-file src="src/ios/ActionSheetStringPicker.m" />
+        <source-file src="src/ios/DistancePickerView.m" />
+        <source-file src="src/ios/SWActionSheet.m" />
+
         <config-file target="config.xml" parent="/widget">
             
             <feature name="customPickerView">

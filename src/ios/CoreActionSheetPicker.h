@@ -16,13 +16,12 @@ FOUNDATION_EXPORT const unsigned char CoreActionSheetPickerVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <CoreActionSheetPicker/PublicHeader.h>
 
-
-#import <CoreActionSheetPicker/AbstractActionSheetPicker.h>
-#import <CoreActionSheetPicker/ActionSheetCustomPicker.h>
-#import <CoreActionSheetPicker/ActionSheetDatePicker.h>
-#import <CoreActionSheetPicker/ActionSheetDistancePicker.h>
-#import <CoreActionSheetPicker/ActionSheetLocalePicker.h>
-#import <CoreActionSheetPicker/ActionSheetStringPicker.h>
-#import <CoreActionSheetPicker/ActionSheetMultipleStringPicker.h>
-#import <CoreActionSheetPicker/DistancePickerView.h>
-#import <CoreActionSheetPicker/ActionSheetPicker.h>
+#import "AbstractActionSheetPicker.h"
+#import "ActionSheetCustomPicker.h"
+#import "ActionSheetDatePicker.h"
+#import "ActionSheetDistancePicker.h"
+#import "ActionSheetLocalePicker.h"
+#import "ActionSheetStringPicker.h"
+#import "ActionSheetMultipleStringPicker.h"
+#import "DistancePickerView.h"
+#import "ActionSheetPicker.h"
