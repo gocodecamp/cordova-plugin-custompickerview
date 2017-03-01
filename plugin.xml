@@ -57,11 +57,6 @@
             target-dir="src/com/bjzjns/cordovaplugin" />
         <source-file src="src/android/MultiWheelPickerManager.java"
             target-dir="src/com/bjzjns/cordovaplugin" />
-        <source-file src="src/android/MultiWheelPickerModel.java"
-            target-dir="src/com/bjzjns/cordovaplugin" />
-        <source-file src="src/android/WheelPickerModel.java"
-            target-dir="src/com/bjzjns/cordovaplugin" />
         <framework src="cn.aigestudio.wheelpicker:WheelPicker:1.1.2" />
-        <framework src="com.google.code.gson:gson:2.8.0" />
     </platform>
 </plugin>
