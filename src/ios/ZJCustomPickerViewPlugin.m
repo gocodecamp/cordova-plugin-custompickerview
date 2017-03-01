@@ -146,6 +146,9 @@
                 break;
             }
         }
+    }else {
+        self.indexArray[component] = [NSNumber numberWithInteger:row];
+        
     }
     
     
