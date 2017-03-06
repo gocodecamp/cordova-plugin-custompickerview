@@ -26,6 +26,19 @@
 
 @implementation ZJCustomPickerViewPlugin
 
+-(void)showAddressPickerView:(CDVInvokedUrlCommand *)command{
+    self.callbackId = command.callbackId;
+    
+    NSData *JSONData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"addr" ofType:@"json"]];
+    
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSONData options:NSJSONReadingAllowFragments error:nil];
+    
+    NSArray *array = dict[@"dataArray"];
+    [self showPickerWith:array componentCount:3 isLinkWork:YES];
+    
+    
+}
+
 -(void)showPickerView:(CDVInvokedUrlCommand *)command{
     
     self.callbackId = command.callbackId;

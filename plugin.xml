@@ -14,6 +14,7 @@
     </js-module>
     
     <platform name="ios">
+        <resource-file src="src/ios/addr.json" target=""/>
         <source-file src="src/ios/ZJCustomPickerViewPlugin.m" />
         <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />        
         <header-file src="src/ios/AbstractActionSheetPicker.h" />
@@ -37,7 +38,7 @@
         <source-file src="src/ios/ActionSheetStringPicker.m" />
         <source-file src="src/ios/DistancePickerView.m" />
         <source-file src="src/ios/SWActionSheet.m" />
-
+        
         <config-file target="config.xml" parent="/widget">
             
             <feature name="customPickerView">

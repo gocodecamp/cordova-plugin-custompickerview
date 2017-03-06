@@ -5,6 +5,9 @@ function PickerViewModel() {};
 PickerViewModel.prototype.showPickerView = function (success,fail,option) {
      exec(success, fail, 'customPickerView', 'showPickerView', option);
 };
+PickerViewModel.prototype.showAddressPickerView = function (success,fail,option) {
+exec(success, fail, 'customPickerView', 'showAddressPickerView', option);
+};
 
 var pickerViewModel = new PickerViewModel();
 module.exports = pickerViewModel;
