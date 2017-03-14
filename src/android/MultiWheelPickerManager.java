@@ -77,7 +77,6 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
      * @param jsonArray
      */
     private void initData(JSONArray jsonArray) {
-
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(0);
             Log.i(TAG, "初始化数据:" + jsonObject.toString());
@@ -111,7 +110,6 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
      * @param jsonArray
      */
     private void getNameList(ArrayList<String> arrayList, JSONArray jsonArray) {
-
         if (arrayList != null && jsonArray != null) {
             arrayList.clear();
             int length = jsonArray.length();
@@ -253,10 +251,15 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
                         jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
                         if (linkage) {
                             jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
-                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+
+                            if (mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).length() > 0) {
+                                jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+                            }
                         } else {
                             jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
-                            jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+                            if (mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).length() > 0) {
+                                jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
+                            }
                         }
                         break;
                 }
@@ -265,14 +268,12 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
             } catch (JSONException e) {
                 e.printStackTrace();
                 mCallbackContext.error(e.getMessage());
-
             }
         }
     }
 
     @Override
     public void onItemSelected(WheelPicker picker, Object data, int position) {
-
         try {
             if (picker.getId() == getViewIdentifier("wheel_left_wp")) {
                 mLeftPostion = position;

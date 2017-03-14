@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<plugin xmlns="http://phonegap.com/ns/plugins/1.0"
-    id="cordova-plugin-custompickerview"
-    version="1.0.0">
+<plugin id="cordova-plugin-custompickerview" version="1.0.0"
+    xmlns="http://phonegap.com/ns/plugins/1.0">
     <engines>
         <engine name="cordova" version=">=3.3.0" />
     </engines>
-    
+
     <name>customPickerView</name>
     <description>customPickerView</description>
-    
-    <js-module src="www/customPickerView.js" name="pickerViewModel">
+
+    <js-module name="pickerViewModel" src="www/customPickerView.js">
         <clobbers target="pickerViewModel" />
     </js-module>
-    
+
     <platform name="ios">
-        <resource-file src="src/ios/addr.json" target=""/>
+        <resource-file src="src/ios/addr.json" target="" />
         <source-file src="src/ios/ZJCustomPickerViewPlugin.m" />
-        <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />        
+        <header-file src="src/ios/ZJCustomPickerViewPlugin.h" />
         <header-file src="src/ios/AbstractActionSheetPicker.h" />
         <header-file src="src/ios/ActionSheetCustomPicker.h" />
         <header-file src="src/ios/ActionSheetCustomPickerDelegate.h" />
@@ -38,26 +37,26 @@
         <source-file src="src/ios/ActionSheetStringPicker.m" />
         <source-file src="src/ios/DistancePickerView.m" />
         <source-file src="src/ios/SWActionSheet.m" />
-        
-        <config-file target="config.xml" parent="/widget">
-            
+        <config-file parent="/widget" target="config.xml">
             <feature name="customPickerView">
                 <param name="ios-package" value="ZJCustomPickerViewPlugin" />
             </feature>
         </config-file>
     </platform>
-	<platform name="android">
+    <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="customPickerView">
-                <param name="android-package" value="com.bjzjns.cordovaplugin.customPickerView" />
+                <param name="android-package"
+                    value="com.bjzjns.cordovaplugin.MultiWheelPickerPlugin" />
             </feature>
         </config-file>
-        <config-file parent="/*" target="AndroidManifest.xml"></config-file>
-        <source-file src="src/android/layout_multi_wheel_picker.xml" target-dir="res/layout" />
-        <source-file src="src/android/customPickerView.java"
+        <source-file src="src/android/layout_multi_wheel_picker.xml"
+            target-dir="res/layout" />
+        <source-file src="src/android/MultiWheelPickerPlugin.java"
             target-dir="src/com/bjzjns/cordovaplugin" />
         <source-file src="src/android/MultiWheelPickerManager.java"
             target-dir="src/com/bjzjns/cordovaplugin" />
         <framework src="cn.aigestudio.wheelpicker:WheelPicker:1.1.2" />
+        <asset src="src/android/addr.json" target="addr.json" />
     </platform>
 </plugin>
