@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSString *callbackId;
 
 
+
 @end
 
 @implementation ZJCustomPickerViewPlugin
@@ -34,7 +35,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSONData options:NSJSONReadingAllowFragments error:nil];
     
     NSArray *array = dict[@"dataArray"];
-    [self showPickerWith:array componentCount:3 isLinkWork:YES];
+    [self showPickerWith:array componentCount:3 isLinkWork:YES title:@"选择地区"];
     
     
 }
@@ -48,19 +49,20 @@
         NSArray *array = dict[@"dataArray"];
         NSNumber *isLinkWorkNumber = dict[@"isLinkWork"];
         NSNumber *columnCount = dict[@"columnCount"];
-        [self showPickerWith:array componentCount:columnCount.intValue isLinkWork:isLinkWorkNumber.intValue];
+        NSString *title = dict[@"title"];
+        [self showPickerWith:array componentCount:columnCount.intValue isLinkWork:isLinkWorkNumber.intValue title:title];
     }else {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"没有参数"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
-
-
+    
+    
     
     
 }
 
 
-- (void)showPickerWith:(NSArray *)objectArray componentCount:(int)componentCount isLinkWork:(BOOL)isLinkWork {
+- (void)showPickerWith:(NSArray *)objectArray componentCount:(int)componentCount isLinkWork:(BOOL)isLinkWork title:(NSString *)title{
     
     self.indexArray = nil;
     for (int i = 0; i<componentCount; i++) {
@@ -71,7 +73,7 @@
     
     [self calculateData];
     
-    self.picker = [[ActionSheetCustomPicker alloc]initWithTitle:@"选择地区" delegate:self showCancelButton:YES origin:[UIApplication sharedApplication].keyWindow initialSelections:self.indexArray];
+    self.picker = [[ActionSheetCustomPicker alloc]initWithTitle:title delegate:self showCancelButton:YES origin:[UIApplication sharedApplication].keyWindow initialSelections:self.indexArray];
     self.picker.tapDismissAction  = TapActionSuccess;
     [self.picker showActionSheetPicker];
 }

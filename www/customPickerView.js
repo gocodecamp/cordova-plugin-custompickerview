@@ -17,6 +17,6 @@ module.exports = pickerViewModel;
 //var dataArray = [{'name' : '北京', 'objectArray' : [{'name': '北京', 'objectArray': [{'name': '昌平'}, {'name': '海淀'}, {'name': '朝阳'}]}]},
 //                 {'name' : '天津', 'objectArray' : [{'name': '天津', 'objectArray': [{'name': 'aaa'}, {'name': 'bbb'}, {'name': 'ccc'}]}]}];
 
-//pickerViewModel.showPickerView(alertSuccess,alertFail,[{"dataArray" : dataArray, "columnCount": 3, "isLinkWork": true}]);
+//pickerViewModel.showPickerView(alertSuccess,alertFail,[{"dataArray" : dataArray, "columnCount": 3, "isLinkWork": true, "title": "hhhhh"}]);
 
 //callback返回的数据结构是 [{'name': '', 'objectArray': []}, {{'name': '', 'objectArray': []}, {{'name': '', 'objectArray': []}]
