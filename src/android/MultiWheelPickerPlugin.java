@@ -61,6 +61,7 @@ public class MultiWheelPickerPlugin extends CordovaPlugin {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("columnCount", 3);
             jsonObject.put("isLinkWork", true);
+            jsonObject.put("title", "选择地区");
             jsonObject.put("dataArray", new JSONObject(text).getJSONArray("dataArray"));
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(jsonObject);
