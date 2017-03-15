@@ -22,6 +22,8 @@ import java.util.ArrayList;
  * 说明
  * 传入的JsonArry数据约定格式
  * [{"dataArray":[{"name":"北京","objectArray":[{"name":"北京","objectArray":[{"name":"昌平"},{"name":"海淀"},{"name":"朝阳"}]}]},{"name":"天津","objectArray":[{"name":"天津","objectArray":[{"name":"aaa"},{"name":"bbb"},{"name":"ccc"}]}]}],"columnCount":3,"isLinkWork":true, "title":"hhhhh"}]
+ * 或者
+ * [{"dataArray":[[{'name' : '不喜欢/不想要','id': 1}, {'name' : '未按约定时间发货', 'id': 2},{'name' : '商品描述不符', 'id': 3},{'name' : '快递物流无跟踪记录', 'id': 4}],[{'name' : '不喜欢/不想要','id': 1}, {'name' : '未按约定时间发货', 'id': 2},{'name' : '商品描述不符', 'id': 3},{'name' : '快递物流无跟踪记录', 'id': 4}],[{'name' : '不喜欢/不想要','id': 1}, {'name' : '未按约定时间发货', 'id': 2},{'name' : '商品描述不符', 'id': 3},{'name' : '快递物流无跟踪记录', 'id': 4}]],"columnCount":3,"isLinkWork":false, "title": "hhhhh"}]
  */
 
 public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListener, View.OnClickListener {
@@ -88,15 +90,29 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
             mWheelPickerNumber = jsonObject.getInt(mKeyColumnCount);
             linkage = jsonObject.getBoolean(mKeyIsLinkWork);
             mTitle = jsonObject.getString(mKeyTitle);
+
             mJsonArray = jsonObject.getJSONArray(mKeyDataArray);
 
             switch (mWheelPickerNumber) {
                 case 3:
-                    getNameList(mRightList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray));
+                    if (linkage) {
+                        getNameList(mRightList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray));
+                    } else {
+                        getNameList(mRightList, mJsonArray.getJSONArray(2));
+                    }
+
                 case 2:
-                    getNameList(mCenterList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray));
+                    if (linkage) {
+                        getNameList(mCenterList, mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray));
+                    } else {
+                        getNameList(mCenterList, mJsonArray.getJSONArray(1));
+                    }
                 case 1:
-                    getNameList(mLeftList, mJsonArray);
+                    if (linkage) {
+                        getNameList(mLeftList, mJsonArray);
+                    } else {
+                        getNameList(mLeftList, mJsonArray.getJSONArray(0));
+                    }
                 default:
                     break;
             }
@@ -249,32 +265,36 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
             try {
                 switch (mWheelPickerNumber) {
                     case 1:
-                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                        if (linkage) {
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                        } else {
+                            jsonArray.put(mJsonArray.getJSONArray(0).getJSONObject(mLeftPostion));
+                        }
                         break;
                     case 2:
-                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
-                        if (!linkage) {
-                            mLeftPostion = 0;
+                        if (linkage) {
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
+                        } else {
+                            jsonArray.put(mJsonArray.getJSONArray(0).getJSONObject(mLeftPostion));
+                            jsonArray.put(mJsonArray.getJSONArray(1).getJSONObject(mCenterPostion));
                         }
-                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
                         break;
                     case 3:
-                        jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
                         if (linkage) {
+                            jsonArray.put(mJsonArray.getJSONObject(mLeftPostion));
                             jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
-
                             if (mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).length() > 0) {
                                 jsonArray.put(mJsonArray.getJSONObject(mLeftPostion).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
                             }
                         } else {
-                            jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mCenterPostion));
-                            if (mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).length() > 0) {
-                                jsonArray.put(mJsonArray.getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(0).getJSONArray(mKeyObjectArray).getJSONObject(mRightPostion));
-                            }
+                            jsonArray.put(mJsonArray.getJSONArray(0).getJSONObject(mLeftPostion));
+                            jsonArray.put(mJsonArray.getJSONArray(1).getJSONObject(mCenterPostion));
+                            jsonArray.put(mJsonArray.getJSONArray(2).getJSONObject(mRightPostion));
                         }
                         break;
                 }
-                mCallbackContext.success(jsonArray);
+                mCallbackContext.success(jsonArray.toString());
                 Log.i(TAG, "返回的数据：" + jsonArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
