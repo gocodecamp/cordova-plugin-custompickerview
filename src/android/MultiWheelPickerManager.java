@@ -1,10 +1,12 @@
 package com.bjzjns.cordovaplugin;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.aigestudio.wheelpicker.WheelPicker;
 
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 /**
  * 说明
  * 传入的JsonArry数据约定格式
- * [{"dataArray":[{"name":"北京","objectArray":[{"name":"北京","objectArray":[{"name":"昌平"},{"name":"海淀"},{"name":"朝阳"}]}]},{"name":"天津","objectArray":[{"name":"天津","objectArray":[{"name":"aaa"},{"name":"bbb"},{"name":"ccc"}]}]}],"columnCount":3,"isLinkWork":true}]
+ * [{"dataArray":[{"name":"北京","objectArray":[{"name":"北京","objectArray":[{"name":"昌平"},{"name":"海淀"},{"name":"朝阳"}]}]},{"name":"天津","objectArray":[{"name":"天津","objectArray":[{"name":"aaa"},{"name":"bbb"},{"name":"ccc"}]}]}],"columnCount":3,"isLinkWork":true, "title":"hhhhh"}]
  */
 
 public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListener, View.OnClickListener {
@@ -33,6 +35,7 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
     private View mMultiWheelPickerView;
     private View mTouchRl;
     private View mCancelTv;
+    private View mTitleTv;
     private View mConfirmTv;
     private WheelPicker mWheelLeftWp;
     private WheelPicker mWheelCenterWp;
@@ -48,19 +51,21 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
     private ArrayList<String> mRightList = new ArrayList<String>();
 
     private Activity mActivity;
-    private String mAPackageName;
+    private String mPackageName;
     private JSONArray mJsonArray;
+    private String mTitle;
 
     private String mKeyColumnCount = "columnCount";
     private String mKeyIsLinkWork = "isLinkWork";
     private String mKeyDataArray = "dataArray";
+    private String mKeyTitle = "title";
     private String mKeyObjectArray = "objectArray";
 
     public MultiWheelPickerManager(CordovaPlugin cordovaPlugin, CallbackContext callbackContext, JSONArray jsonArray) {
         mCordovaPlugin = cordovaPlugin;
         mCallbackContext = callbackContext;
         mActivity = cordovaPlugin.cordova.getActivity();
-        mAPackageName = mActivity.getPackageName();
+        mPackageName = mActivity.getPackageName();
 
         if (jsonArray.length() != 0) {
             initData(jsonArray);
@@ -82,6 +87,7 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
             Log.i(TAG, "初始化数据:" + jsonObject.toString());
             mWheelPickerNumber = jsonObject.getInt(mKeyColumnCount);
             linkage = jsonObject.getBoolean(mKeyIsLinkWork);
+            mTitle = jsonObject.getString(mKeyTitle);
             mJsonArray = jsonObject.getJSONArray(mKeyDataArray);
 
             switch (mWheelPickerNumber) {
@@ -124,11 +130,11 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
     }
 
     private int getViewIdentifier(String viewId) {
-        return mActivity.getResources().getIdentifier(viewId, "id", mAPackageName);
+        return mActivity.getResources().getIdentifier(viewId, "id", mPackageName);
     }
 
     private int getLayoutIdentifier(String layoutId) {
-        return mActivity.getResources().getIdentifier(layoutId, "layout", mAPackageName);
+        return mActivity.getResources().getIdentifier(layoutId, "layout", mPackageName);
     }
 
     /**
@@ -144,11 +150,16 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
 
                 mTouchRl = mMultiWheelPickerView.findViewById(getViewIdentifier("touch_rl"));
                 mCancelTv = mMultiWheelPickerView.findViewById(getViewIdentifier("cancle_tv"));
+                mTitleTv = mMultiWheelPickerView.findViewById(getViewIdentifier("title_tv"));
                 mConfirmTv = mMultiWheelPickerView.findViewById(getViewIdentifier("confirm_tv"));
 
                 mWheelLeftWp = (WheelPicker) mMultiWheelPickerView.findViewById(getViewIdentifier("wheel_left_wp"));
                 mWheelCenterWp = (WheelPicker) mMultiWheelPickerView.findViewById(getViewIdentifier("wheel_center_wp"));
                 mWheelRightWp = (WheelPicker) mMultiWheelPickerView.findViewById(getViewIdentifier("wheel_right_wp"));
+
+                if (!TextUtils.isEmpty(mTitle)) {
+                    ((TextView) mTitleTv).setText(mTitle);
+                }
 
                 mTouchRl.setOnClickListener(MultiWheelPickerManager.this);
                 mCancelTv.setOnClickListener(MultiWheelPickerManager.this);
