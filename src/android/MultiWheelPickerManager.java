@@ -294,7 +294,7 @@ public class MultiWheelPickerManager implements WheelPicker.OnItemSelectedListen
                         }
                         break;
                 }
-                mCallbackContext.success(jsonArray.toString());
+                mCallbackContext.success(jsonArray);
                 Log.i(TAG, "返回的数据：" + jsonArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
